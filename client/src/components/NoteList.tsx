@@ -11,7 +11,7 @@ type Props = {
   view: View
   selectedId: number | null
   query: string
-  searchRef: React.RefObject<HTMLInputElement | null>
+  searchRef: React.RefObject<HTMLInputElement>
   onQuery: (q: string) => void
   onSelect: (id: number) => void
   onNewNote: () => void
@@ -28,7 +28,7 @@ const viewTitle = (view: View, folders: Folder[]) => {
 }
 
 export default function NoteList(props: Props) {
-  const { notes, folders, view, selectedId, query, searchRef, onQuery, onSelect, onNewNote } = props
+  const { notes, folders, view, selectedId, query, searchRef, onQuery, onNewNote } = props
   const pinned = notes.filter((n) => n.pinned && !n.trashed)
   const rest = notes.filter((n) => !n.pinned || n.trashed)
   const inTrash = view.kind === 'trash'

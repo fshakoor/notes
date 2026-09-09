@@ -153,7 +153,7 @@ function wrap(ta: TA, marker: string) {
   replace(ta, s, e, next, s + len, e + len)
 }
 
-const mod = (e: KeyboardEvent) => e.metaKey || e.ctrlKey
+const mod = (e: { metaKey: boolean; ctrlKey: boolean }) => e.metaKey || e.ctrlKey
 
 /** Handle an editor keydown. Returns true if the key was consumed. */
 export function handleEditorKeydown(e: React.KeyboardEvent<HTMLTextAreaElement>): boolean {
