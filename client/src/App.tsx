@@ -30,6 +30,11 @@ export default function App() {
     setDrawer(false)
   }
 
+  // the keydown effect below only re-subscribes when overlays change, so it would otherwise close
+  // over a stale newNote (and thus a stale current folder). A ref keeps it pointed at the latest one.
+  const newNoteRef = useRef(newNote)
+  newNoteRef.current = newNote
+
   // global shortcuts: new note, focus search, close overlays
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -37,7 +42,7 @@ export default function App() {
       const typing = e.target instanceof HTMLElement && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')
       if (mod && (e.key === 'n' || e.key === 'N')) {
         e.preventDefault()
-        void newNote()
+        void newNoteRef.current()
       } else if ((mod && (e.key === 'f' || e.key === 'F')) || (e.key === '/' && !typing)) {
         e.preventDefault()
         setPane('list')
