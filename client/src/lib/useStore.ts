@@ -78,25 +78,40 @@ export function useStore() {
     async (id: number) => {
       setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, trashed: true } : n)))
       if (selectedId === id) setSelectedId(null)
-      await api.trashNote(id)
-      setFolders(await api.folders())
+      try {
+        await api.trashNote(id)
+        setFolders(await api.folders())
+      } catch {
+        await reload() // resync if the server rejected it, rather than leaving a phantom state
+      }
     },
-    [selectedId],
+    [selectedId, reload],
   )
 
-  const restoreNote = useCallback(async (id: number) => {
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, trashed: false } : n)))
-    await api.restoreNote(id)
-    setFolders(await api.folders())
-  }, [])
+  const restoreNote = useCallback(
+    async (id: number) => {
+      setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, trashed: false } : n)))
+      try {
+        await api.restoreNote(id)
+        setFolders(await api.folders())
+      } catch {
+        await reload()
+      }
+    },
+    [reload],
+  )
 
   const purgeNote = useCallback(
     async (id: number) => {
       setNotes((prev) => prev.filter((n) => n.id !== id))
       if (selectedId === id) setSelectedId(null)
-      await api.purgeNote(id)
+      try {
+        await api.purgeNote(id)
+      } catch {
+        await reload()
+      }
     },
-    [selectedId],
+    [selectedId, reload],
   )
 
   const addFolder = useCallback(async (name: string) => {
