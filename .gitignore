@@ -5,6 +5,9 @@ dist/
 # local data and secrets, never commit
 server/data/
 .env
-.env.local
+.env.*
+!.env.example
+*.pem
+*.key
 .claude/
 CLAUDE.md
